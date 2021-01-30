@@ -9,7 +9,7 @@ func main() {
 	links := []string{
 		"http://google.com",
 		"http://stackoverflow.com",
-		"http://twiter.com",
+		"http://twitter.com",
 		"http://facebook.com",
 		"http://gmail.com",
 	}
@@ -17,7 +17,10 @@ func main() {
 	for _, link := range links {
 		go checkLink(link, c)
 	}
-	fmt.Println(<-c)
+
+	for l := range c {
+		go checkLink(l, c)
+	}
 }
 
 func checkLink(link string, c chan string) {
@@ -25,10 +28,11 @@ func checkLink(link string, c chan string) {
 
 	if err != nil {
 		fmt.Println(link, " might be down")
-		c <- "Might be don I think"
+		c <- link
 		return
 	}
 
 	fmt.Println(link, " is up")
-	c <- "Yep it's up"
+	c <- link
+	return
 }
